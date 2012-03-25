@@ -5,8 +5,7 @@ import cStringIO
 # The application's token
 token = 'AAAAAAITEghMBACDHmzfQkpQgO2lQDlsyJYBTL6pj7BhwCBhXKbh3Pe3cW6fapNkslwV3Qv8BBf52y8wy6MzOnAfZCGZA4CgEGLsflfoAZDZD'
 
-# Function that gets stuff (photos, albums, friends) from a certain user (whose)
-
+# Function that gets stuff (photos, albums, friends) from a certain URL
 def get_json_from_url(url):
     buf = cStringIO.StringIO()
     c = pycurl.Curl()
@@ -38,7 +37,7 @@ def get_albums_from_friend(friend_id):
         album_dictionary[album_id] = {'name' : name }
     return album_dictionary
 
-#Function that gets all videos from a friend
+# Function that gets all videos from a friend
 def get_videos_from_friend(friend_id):
     videos_dictionary = {}
     videos = fetch(friend_id, 'videos')['data']
