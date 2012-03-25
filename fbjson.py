@@ -3,7 +3,7 @@ import json
 import cStringIO
 
 # The application's token
-token = ''
+token = 'AAAAAAITEghMBACDHmzfQkpQgO2lQDlsyJYBTL6pj7BhwCBhXKbh3Pe3cW6fapNkslwV3Qv8BBf52y8wy6MzOnAfZCGZA4CgEGLsflfoAZDZD'
 
 # Function that gets stuff (photos, albums, friends) from a certain user (whose)
 
@@ -30,12 +30,24 @@ def get_album_photos(album_id):
 
 # Function that gets every album from a friend
 def get_albums_from_friend(friend_id):
-    album_list = []
+    album_dictionary = {}
     albums = fetch(friend_id, 'albums')['data']
     for album in albums:
-        album['name'] = album['name'].encode('ascii', 'replace')
-        album_list.append(album['name'])
-    return album_list
+        name = album['name'].encode('ascii', 'replace')
+        album_id = album['id'].encode('ascii','replace')
+        album_dictionary[album_id] = {'name' : name }
+    return album_dictionary
+
+#Function that gets all videos from a friend
+def get_videos_from_friend(friend_id):
+    videos_dictionary = {}
+    videos = fetch(friend_id, 'videos')['data']
+    for video in videos:
+        video_id = video['id'].encode('ascii', 'replace')
+        name = video['name'].encode('ascii', 'replace')
+        url = video['source'].encode('utf-8')
+        videos_dictionary[video_id] = { 'name' : name, 'url' : url }    
+    return videos_dictionary
 
 # Fetch my complete friend list
 # Don't bother with paging when getting the list of all your friends.
@@ -53,3 +65,7 @@ def get_my_friends():
         id_number = id_number.encode('ascii', 'replace')
         friend_dictionary[name] = []
     return friend_dictionary
+
+if __name__ == "__main__":
+    print get_videos_from_friend('chavezgu')
+    print get_albums_from_friend('noe.dominguez')
