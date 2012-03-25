@@ -3,7 +3,7 @@ import json
 import cStringIO
 
 # The application's token
-token = 'AAAAAAITEghMBADzEJ6FQ1bhTbgkZChxOlBEFEbNmAZAtyM2h7ZC94zJ0GsXHoOD2nSQW3NPXMtc7PqGDaVKTyPfUxHRaUBGZBnglnqIkYgZDZD'
+token = 'AAAAAAITEghMBAL92z1ZAPgl1LnEXGX7HZALfoq9krfZC7OnJcl4lHsZCZAMqbYZBeAYpOI47oWpqP30TNCRzDOOk4QFxZCD0ZC2vvonm8pQoQQZDZD'
 
 # Function that gets stuff (photos, albums, friends) from a certain URL
 def get_json_from_url(url):
@@ -44,21 +44,21 @@ def get_album_photos(album_id):
 
 
 # Function that gets every album from a friend
-def get_albums_from_user(user_id):
-    album_list = []
-    albums = fetch(user_id, 'albums')['data']
+def get_albums_from_friend(friend_id):
+    album_dictionary = {}
+    albums = fetch(friend_id, 'albums')['data']
     for album in albums:
         name = album['name'].encode('ascii', 'replace')
         album_id = album['id'].encode('ascii','replace')
-        album_list.append(name + '_' + album_id)
-    return album_list
+        album_dictionary[name] = {'id' : album_id }
+    return album_dictionary
 
 # Function that gets all videos where my friend is present
-def get_videos_from_user(user_id):
+def get_videos_from_friend(friend_id):
     videos_dictionary = {}
 
     # Get the videos where my friend has been tagged
-    videos_tagged = fetch(user_id, 'videos')['data']
+    videos_tagged = fetch(friend_id, 'videos')['data']
     counter = 1
     for video in videos_tagged:
         video_id = video['id'].encode('ascii', 'replace')
@@ -71,7 +71,7 @@ def get_videos_from_user(user_id):
         videos_dictionary[video_id] = { 'name' : video_name, 'url' : url }
 
     # Get the videos my friend has uploaded
-    videos_uploaded = fetch(user_id, "videos/uploaded")['data']
+    videos_uploaded = fetch(friend_id, "videos/uploaded")['data']
     counter = 1
     for video in videos_uploaded:
         video_id = video['id'].encode('ascii', 'replace')
@@ -88,19 +88,19 @@ def get_videos_from_user(user_id):
 # Don't bother with paging when getting the list of all your friends.
 # You can get the whole list with one single request; paging here is useless.
 def get_my_friends():
-    my_friends = fetch('me', 'friends')['data']
+    my_friends = fetch('me', 'friends') 
+    my_friends = my_friends['data']
     # Create a dictionary with all my friends and their IDs
-    friend_list = []
+    friend_dictionary = {}
     for friend in my_friends:
-        name = friend['name'].encode('ascii', 'replace')
-        id_number = friend['id'].encode('ascii', 'replace')
-        friend_list.append(name + '_' + id_number) 
-    return friend_list
+        #friend_dictionary[friend['name']] = {'id': friend['id']}
+        name = friend['name']
+        name = name.encode('ascii', 'replace')
+        id_number = friend['id']
+        id_number = id_number.encode('ascii', 'replace')
+        friend_dictionary[name] = { "id": id_number } 
+    return friend_dictionary
 
 if __name__ == "__main__":
     #print get_album_photos('10150359722855739')
-    #a = get_albums_from_user('me')
-    #for x in a:
-    #    f = get_album_photos(x.split('_')[1])
-    #    print f
-    print get_my_friends()
+    print get_videos_from_friend('HiggGuayo')
