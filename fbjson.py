@@ -35,7 +35,7 @@ def get_albums_from_friend(friend_id):
     for album in albums:
         name = album['name'].encode('ascii', 'replace')
         album_id = album['id'].encode('ascii','replace')
-        album_dictionary[album_id] = {'name' : name }
+        album_dictionary[name] = {'id' : album_id }
     return album_dictionary
 
 #Function that gets all videos from a friend
@@ -45,8 +45,8 @@ def get_videos_from_friend(friend_id):
     for video in videos:
         video_id = video['id'].encode('ascii', 'replace')
         name = video['name'].encode('ascii', 'replace')
-        url = video['source'].encode('utf-8')
-        videos_dictionary[video_id] = { 'name' : name, 'url' : url }    
+        url = video['source'].encode('ascii')
+        videos_dictionary[name] = { 'id' : video_id, 'url' : url }    
     return videos_dictionary
 
 # Fetch my complete friend list
@@ -63,7 +63,7 @@ def get_my_friends():
         name = name.encode('ascii', 'replace')
         id_number = friend['id']
         id_number = id_number.encode('ascii', 'replace')
-        friend_dictionary[id_number] = { "name": name, "folders": ["photos", "videos"] }
+        friend_dictionary[name] = { "id": id_number } 
     return friend_dictionary
 
 if __name__ == "__main__":
