@@ -64,11 +64,26 @@ class FacebookFS(fuse.Fuse):
 
   def readdir(self, path, offset):
       dirents = [ '.', '..' ]
+      path_separeted = path[1:].split("/")
+      names_of_friends = []
+      files_to_retrieve = ["photos" , "videos"]
+      for key, value in self.friends.iteritems():
+          names_of_friends.append(value['name'])
+
       if path == '/':
-          dirents.extend(self.friends.keys())
+          dirents.extend(names_of_friends)
           #dirents.extend(self.friends.keys())
-      elif path[1:] in self.friends:
-          dirents.extend(self.friends[path[1:]])
+
+      elif path[1:] in names_of_friends:
+          dirents.extend(files_to_retrieve)
+          #dirents.extend(self.friends[path[1:]]['folders'])
+
+
+      elif path[-6:] == 'photos':
+          #friend_id = self.friends[path_separeted[-2]]['id']
+          #albums = fbjson.get_albums_from_friend(friend_id)
+          #dirents.extend(albums)
+
 
       for r in dirents:
           yield fuse.Direntry(r)
