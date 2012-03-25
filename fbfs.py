@@ -5,8 +5,7 @@ import os
 import fusefb
 import fbjson
 
-facebook_auth_uri = "https://www.facebook.com/dialog/oauth?client_id=336398709742529&redirect_uri= https://www.facebook.com/connect/login_success.html&response_type=token"
-
+facebook_auth_uri = "https://www.facebook.com/dialog/oauth?client_id=336398709742529&redirect_uri=https://www.facebook.com/connect/login_success.html&scope=user_photos,friends_photos,user_videos,friends_videos&response_type=token" 
 
 def get_token():
     folder = os.getenv('HOME') + "/.fbfs/token"
@@ -30,8 +29,6 @@ class Browser(gtk.Window):
         self.resize(400, 400)
         webpage.load_uri(facebook_auth_uri)
         self.show_all()
-
-
 
 if __name__ == "__main__":
     token = get_token()

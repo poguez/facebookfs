@@ -63,7 +63,7 @@ def get_my_friends():
         name = name.encode('ascii', 'replace')
         id_number = friend['id']
         id_number = id_number.encode('ascii', 'replace')
-        friend_dictionary[name] = []
+        friend_dictionary[id_number] = { "name": name, "folders": ["photos", "videos"] }
     return friend_dictionary
 
 if __name__ == "__main__":
