@@ -3,7 +3,7 @@ import json
 import cStringIO
 
 # The application's token
-token = 'AAAAAAITEghMBACDHmzfQkpQgO2lQDlsyJYBTL6pj7BhwCBhXKbh3Pe3cW6fapNkslwV3Qv8BBf52y8wy6MzOnAfZCGZA4CgEGLsflfoAZDZD'
+token = 'AAAAAAITEghMBAMniFEHIQi4N79Q5yR5ZCbsAa2YkI4P4c0T1vn7oVp5yc7rgSkRKv5IMNroD978fj1HMRthiACHnq7BjBaQM1EporwwZDZD'
 
 # Function that gets stuff (photos, albums, friends) from a certain URL
 def get_json_from_url(url):
@@ -17,15 +17,30 @@ def get_json_from_url(url):
     json_object = json.loads(buf.getvalue())
     return json_object
 
-# Function that gets a specific object from a specific person
+# Function that gets a specific object in which a person has been tagged
+#domain: [photos, videos]
 def fetch(whose, what):    
     url = 'https://graph.facebook.com/' + whose +'/' + what + '?access_token=' + token
     return get_json_from_url(url)
 
+
 # Function that gets all of the pictures from a specific album 
 def get_album_photos(album_id):
     url = 'https://graph.facebook.com/' + album_id + '/photos?access_token=' + token
-    return get_json_from_url(url)
+    photos = get_json_from_url(url)['data']
+    print photos
+    photo_dictionary = {}
+    counter = 1
+    for photo in photos:
+        photo_id = photo['id'].encode('ascii','replace')
+        if 'name' in photo:
+            photo_name = photo['name'].encode('ascii','replace')
+        else:
+            photo_name = 'unnamed' + str(counter)
+            counter += 1
+        photo_source = photo['source'].encode('ascii','replace')
+        photo_dictionary[photo_id] = {'name' : photo_name ,'source' : photo_source}
+    return photo_dictionary
 
 # Function that gets every album from a friend
 def get_albums_from_friend(friend_id):
@@ -66,5 +81,4 @@ def get_my_friends():
     return friend_dictionary
 
 if __name__ == "__main__":
-    print get_videos_from_friend('chavezgu')
-    print get_albums_from_friend('noe.dominguez')
+    print get_album_photos('10150359722855739')
