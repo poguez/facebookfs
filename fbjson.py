@@ -30,12 +30,12 @@ def get_album_photos(album_id):
 
 # Function that gets every album from a friend
 def get_albums_from_friend(friend_id):
-	album_list = []
-	albums = fetch(friend_id, 'albums')['data']
-	for album in albums:
-		album['name'] = album['name'].encode('ascii', 'replace')
-		album_list.append(album['name'])
-	return album_list
+    album_list = []
+    albums = fetch(friend_id, 'albums')['data']
+    for album in albums:
+        album['name'] = album['name'].encode('ascii', 'replace')
+        album_list.append(album['name'])
+    return album_list
 
 # Fetch my complete friend list
 # Don't bother with paging when getting the list of all your friends.
