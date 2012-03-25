@@ -39,10 +39,8 @@ class FacebookFS(fuse.Fuse):
     
       self.friends = fbjson.get_my_friends()
       #self.friends = { "Noe Dominguez": [], "Everardo Padilla": [] }
-
-
       #self.printers = {"biblio1": [], "biblio2": []}
-      #self.files = { "1" : "Hola", "2":"Mundo"}
+      #self.files = { "photos" : [], "videos" : [] }
       #self.lastfiles = { "1" : "Hola", "2":"Mundo"}
 
   def getattr(self, path):
@@ -60,8 +58,8 @@ class FacebookFS(fuse.Fuse):
           #st.st_mode = stat.S_IFREG | 0666
           #st.st_nlink = 1
           #st.st_size = len(self.lastfiles[pe[-1]])
-      else:
-          return -errno.ENOENT
+      #else:
+          #return -errno.ENOENT
       return st
 
   def readdir(self, path, offset):
@@ -69,8 +67,9 @@ class FacebookFS(fuse.Fuse):
       if path == '/':
           dirents.extend(self.friends.keys())
           #dirents.extend(self.friends.keys())
-      #else:
-          #dirents.extend(self.friends[path[1:]])
+      elif path[1:] in self.friends:
+          dirents.extend(self.friends[path[1:]])
+
       for r in dirents:
           yield fuse.Direntry(r)
 
@@ -90,7 +89,7 @@ class FacebookFS(fuse.Fuse):
 
   def read(self, path, size, offset):
       #pe = path.split('/')[1:]        # Path elements 0 = printer 1 = file
-      #return self.lastfiles[pe[1]][offset:offset+size]
+      #return self.files[pe[1]][offset:offset+size]
       return 0
 
   def write(self, path, buf, offset):
