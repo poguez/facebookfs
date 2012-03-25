@@ -3,7 +3,7 @@ import json
 import cStringIO
 
 # The application's token
-token = 'AAAAAAITEghMBAL92z1ZAPgl1LnEXGX7HZALfoq9krfZC7OnJcl4lHsZCZAMqbYZBeAYpOI47oWpqP30TNCRzDOOk4QFxZCD0ZC2vvonm8pQoQQZDZD'
+token = 'AAAAAAITEghMBAMniFEHIQi4N79Q5yR5ZCbsAa2YkI4P4c0T1vn7oVp5yc7rgSkRKv5IMNroD978fj1HMRthiACHnq7BjBaQM1EporwwZDZD'
 
 # Function that gets stuff (photos, albums, friends) from a certain URL
 def get_json_from_url(url):
@@ -41,8 +41,6 @@ def get_album_photos(album_id):
         photo_dictionary[photo_id] = {'name' : photo_name ,'source' : photo_source}
     return photo_dictionary
 
-
-
 # Function that gets every album from a friend
 def get_albums_from_friend(friend_id):
     album_dictionary = {}
@@ -53,35 +51,15 @@ def get_albums_from_friend(friend_id):
         album_dictionary[name] = {'id' : album_id }
     return album_dictionary
 
-# Function that gets all videos where my friend is present
-def get_videos_from_friend(friend_id):
+# Function that gets all videos where a friend has been tagged
+def get_tag_videos_from_friend(friend_id):
     videos_dictionary = {}
-
-    # Get the videos where my friend has been tagged
-    videos_tagged = fetch(friend_id, 'videos')['data']
-    counter = 1
-    for video in videos_tagged:
+    videos = fetch(friend_id, 'videos')['data']
+    for video in videos:
         video_id = video['id'].encode('ascii', 'replace')
-        if 'name' in video:
-            video_name = video['name'].encode('ascii', 'replace')
-        else:
-            video_name = 'unnamed' + str(counter)
-            counter += 1
+        name = video['name'].encode('ascii', 'replace')
         url = video['source'].encode('ascii')
-        videos_dictionary[video_id] = { 'name' : video_name, 'url' : url }
-
-    # Get the videos my friend has uploaded
-    videos_uploaded = fetch(friend_id, "videos/uploaded")['data']
-    counter = 1
-    for video in videos_uploaded:
-        video_id = video['id'].encode('ascii', 'replace')
-        if 'name' in video:
-            video_name = video['name'].encode('ascii', 'replace')
-        else:
-            vide_name = 'unnamed' + str(counter)
-            counter += 1
-        url = video['source'].encode('ascii')
-        videos_dictionary[video_id] = { 'name' : video_name, 'url' : url }    
+        videos_dictionary[name] = { 'id' : video_id, 'url' : url }    
     return videos_dictionary
 
 # Fetch my complete friend list
@@ -102,5 +80,4 @@ def get_my_friends():
     return friend_dictionary
 
 if __name__ == "__main__":
-    #print get_album_photos('10150359722855739')
-    print get_videos_from_friend('HiggGuayo')
+    print get_album_photos('10150359722855739')
