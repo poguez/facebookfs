@@ -3,7 +3,8 @@ import json
 import cStringIO
 
 # The application's token
-token = 'AAAAAAITEghMBADzEJ6FQ1bhTbgkZChxOlBEFEbNmAZAtyM2h7ZC94zJ0GsXHoOD2nSQW3NPXMtc7PqGDaVKTyPfUxHRaUBGZBnglnqIkYgZDZD'
+
+token = ""
 
 # Function that gets stuff (photos, albums, friends) from a certain URL
 def get_json_from_url(url):
@@ -38,7 +39,7 @@ def get_album_photos(album_id):
             photo_name = 'unnamed' + str(counter)
             counter += 1
         photo_source = photo['source'].encode('ascii','replace')
-        photo_dictionary[photo_id] = {'name' : photo_name ,'source' : photo_source}
+        photo_dictionary[photo_id + ".jpg"] = {'name' : photo_name ,'source' : photo_source}
     return photo_dictionary
 
 
@@ -97,10 +98,3 @@ def get_my_friends():
         friend_list.append(name + '_' + id_number) 
     return friend_list
 
-if __name__ == "__main__":
-    #print get_album_photos('10150359722855739')
-    #a = get_albums_from_user('me')
-    #for x in a:
-    #    f = get_album_photos(x.split('_')[1])
-    #    print f
-    print get_my_friends()
