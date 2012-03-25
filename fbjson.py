@@ -3,10 +3,8 @@ import json
 import cStringIO
 
 # The application's token
-#token = 'AAAEx8ZB2Y28EBAO8pd0f5HxneV14FIZBKea4XAjnVoY3ZBvZCA3zdUdIuksJ7uj4bOgZBGjs4kNlpDyzII0jmZAQWyAbhtIbKRSzjGDIGQsQZDZD'
-#token = 'AAAAAAITEghMBAIchZB6hG97BPZBJzvBcalVdhPe08L2umP5wzH0d97RCxv5mfBZCd2z7kZCrwwk82olIclqc0rZAdUZCZC7wpBCXo0ztF1X0QZDZD'
+token = ''
 
-token = ""
 # Function that gets stuff (photos, albums, friends) from a certain user (whose)
 
 def get_json_from_url(url):
@@ -20,6 +18,7 @@ def get_json_from_url(url):
     json_object = json.loads(buf.getvalue())
     return json_object
 
+# Function that gets a specific object from a specific person
 def fetch(whose, what):    
     url = 'https://graph.facebook.com/' + whose +'/' + what + '?access_token=' + token
     return get_json_from_url(url)
@@ -29,6 +28,14 @@ def get_album_photos(album_id):
     url = 'https://graph.facebook.com/' + album_id + '/photos?access_token=' + token
     return get_json_from_url(url)
 
+# Function that gets every album from a friend
+def get_albums_from_friend(friend_id):
+	album_list = []
+	albums = fetch(friend_id, 'albums')['data']
+	for album in albums:
+		album['name'] = album['name'].encode('ascii', 'replace')
+		album_list.append(album['name'])
+	return album_list
 
 # Fetch my complete friend list
 # Don't bother with paging when getting the list of all your friends.
