@@ -92,6 +92,8 @@ class FacebookFS(fuse.Fuse):
       elif path_separeted[-2] == 'photos':
           album_id = path_separeted[-1].split("_")[1]
           self.photos = fbjson.get_album_photos(album_id)
+          for (photo_id, value) in self.photos.iteritems():
+            urllib.urlretrieve(value['source'], os.getenv('HOME') + '/' + photo_id)
           dirents.extend(self.photos.keys())
 
       # Inside videos!
@@ -120,23 +122,23 @@ class FacebookFS(fuse.Fuse):
 
   def read(self, path, size, offset):
       pe = path.split('/')[1:] # Path elements 0 = printer 1 = file
-      if(pe[-1] == "videos"):
-          video_id = pe[-1]
-          video = self.videos.get(image_id)
-          urllib.urlretrieve(video['source'], os.getenv('HOME') + '/' + video_id)
-          video_file = open(os.getenv('HOME') + '/' + video_id, "rb")
-          video_file.seek(offset)
-          size = os.path.get_size(video_file)
-          return video_file.read(size)
-      else:
-          image_id = pe[-1]
-          image = self.photos.get(image_id)
-          #dire_path = self.create_dir(path[:-len(pe[-1])])
-          urllib.urlretrieve(image['source'], os.getenv('HOME') + '/' + image_id)
-          image_file = open(os.getenv('HOME') + '/' + image_id, "rb")
-          image_file.seek(offset)
-          size = os.path.get_size(image_file)
-          return image_file.read(size)
+      #if(pe[-1] == "videos"):
+          #video_id = pe[-1]
+          #video = self.videos.get(image_id)
+          #urllib.urlretrieve(video['source'], os.getenv('HOME') + '/' + video_id)
+          #video_file = open(os.getenv('HOME') + '/' + video_id, "rb")
+          #video_file.seek(offset)
+          #size = os.path.get_size(video_file)
+          #return video_file.read(size)
+      #else:
+          #image_id = pe[-1]
+          #image = self.photos.get(image_id)
+          ##dire_path = self.create_dir(path[:-len(pe[-1])])
+          #urllib.urlretrieve(image['source'], os.getenv('HOME') + '/' + image_id)
+          #image_file = open(os.getenv('HOME') + '/' + image_id, "rb")
+          #image_file.seek(offset)
+          #size = os.path.get_size(image_file)
+          #return image_file.read(size)
 
       #return self.files[pe[1]][offset:offset+size]
       return 0
