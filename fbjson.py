@@ -1,6 +1,5 @@
-import pycurl
 import json
-import cStringIO
+import urllib
 
 # The application's token
 
@@ -8,14 +7,8 @@ token = ""
 
 # Function that gets stuff (photos, albums, friends) from a certain URL
 def get_json_from_url(url):
-    buf = cStringIO.StringIO()
-    c = pycurl.Curl()
-    c.setopt(c.URL, url)
-    c.setopt(c.WRITEFUNCTION, buf.write)
-    c.setopt(c.CONNECTTIMEOUT, 5)
-    c.setopt(c.TIMEOUT, 8)
-    c.perform()
-    json_object = json.loads(buf.getvalue())
+    ret = urllib.urlopen(url)
+    json_object = json.loads(ret.read())
     return json_object
 
 # Function that gets a specific object in which a person has been tagged
