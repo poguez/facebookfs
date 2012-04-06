@@ -15,6 +15,7 @@ from time import time
 from subprocess import *
 import fbjson
 import urllib
+import tempfile
 
 fuse.fuse_python_api = (0, 2)
 
@@ -43,6 +44,7 @@ class FacebookFS(fuse.Fuse):
       self.friends = fbjson.get_my_friends()
       self.photos = {}
       self.videos = {}
+      self.temp_folder = tempfile.mkdtemp(prefix="fbfs")
       #self.friends = { "Noe Dominguez": [], "Everardo Padilla": [] }
       #self.printers = {"biblio1": [], "biblio2": []}
       #self.files = { "photos" : [], "videos" : [] }
@@ -93,7 +95,7 @@ class FacebookFS(fuse.Fuse):
           album_id = path_separeted[-1].split("_")[1]
           self.photos = fbjson.get_album_photos(album_id)
           for (photo_id, value) in self.photos.iteritems():
-            urllib.urlretrieve(value['source'], os.getenv('HOME') + '/' + photo_id)
+            urllib.urlretrieve(value['source'], self.temp_folder + '/' + photo_id)
           dirents.extend(self.photos.keys())
 
       # Inside videos!
