@@ -45,6 +45,7 @@ class FacebookFS(fuse.Fuse):
       self.photos = {}
       self.videos = {}
       self.temp_folder = tempfile.mkdtemp(prefix="fbfs")
+      self.curr_alb_photos = {}
       #self.friends = { "Noe Dominguez": [], "Everardo Padilla": [] }
       #self.printers = {"biblio1": [], "biblio2": []}
       #self.files = { "photos" : [], "videos" : [] }
@@ -93,7 +94,12 @@ class FacebookFS(fuse.Fuse):
           album_id = path_separeted[-1].split("_")[1]
           self.photos = fbjson.get_album_photos(album_id)
           for (photo_id, value) in self.photos.iteritems():
-            urllib.urlretrieve(value['source'], self.temp_folder + '/' + photo_id)
+            abs_path_foto = self.temp_folder + '/' + photo_id
+            urllib.urlretrieve(value['source'], abs_path_foto)
+            image_file = open(abs_path_foto, "r")
+            image_file.seek(0)
+            size = os.path.getsize(abs_path_foto)
+            self.curr_alb_photos[photo_id] = image_file.read(size)
           dirents.extend(self.photos.keys())
 
       # Inside videos!
