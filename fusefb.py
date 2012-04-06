@@ -62,9 +62,7 @@ class FacebookFS(fuse.Fuse):
       #elif self.friends.has_key(pe[-1]):
           #pass
       elif len(pe) == 4:
-          st.st_mode = stat.S_IFREG | 0666
-          st.st_nlink = 1
-          st.st_size = 1
+          st = os.stat(self.temp_folder + '/' + pe[3])
       #else:
           #return -errno.ENOENT
       return st
