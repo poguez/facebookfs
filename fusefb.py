@@ -16,6 +16,7 @@ from subprocess import *
 import fbjson
 import urllib
 import tempfile
+import fuse_fh
 
 fuse.fuse_python_api = (0, 2)
 
@@ -93,13 +94,7 @@ class FacebookFS(fuse.Fuse):
       elif path_separeted[-2] == 'photos':
           album_id = path_separeted[-1].split("_")[1]
           self.photos = fbjson.get_album_photos(album_id)
-          for (photo_id, value) in self.photos.iteritems():
-            abs_path_foto = self.temp_folder + '/' + photo_id
-            urllib.urlretrieve(value['source'], abs_path_foto)
-            image_file = open(abs_path_foto, "r")
-            image_file.seek(0)
-            size = os.path.getsize(abs_path_foto)
-            self.curr_alb_photos[photo_id] = image_file.read(size)
+          self.curr_alb_photos = fuse_fh.get_photos(self.photos, self.temp_folder)
           dirents.extend(self.photos.keys())
 
       # Inside videos!
@@ -128,6 +123,7 @@ class FacebookFS(fuse.Fuse):
 
   def read(self, path, size, offset):
       pe = path.split('/')[1:] # Path elements 0 = printer 1 = file
+      return self.curr_alb_photos[pe[-1]][offset:offset+size]
       #if(pe[-1] == "videos"):
           #video_id = pe[-1]
           #video = self.videos.get(image_id)
