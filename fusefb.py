@@ -47,6 +47,8 @@ class FacebookFS(fuse.Fuse):
       self.videos = {}
       self.temp_folder = tempfile.mkdtemp(prefix="fbfs")
       self.curr_alb_photos = {}
+      # Current viewing folder
+      self.curr_fol = ""
       #self.friends = { "Noe Dominguez": [], "Everardo Padilla": [] }
       #self.printers = {"biblio1": [], "biblio2": []}
       #self.files = { "photos" : [], "videos" : [] }
@@ -64,7 +66,7 @@ class FacebookFS(fuse.Fuse):
       #elif self.friends.has_key(pe[-1]):
           #pass
       elif len(pe) == 4:
-          st = os.stat(self.temp_folder + '/' + pe[3])
+          st = os.stat(self.curr_fol + '/' + pe[3])
       #else:
           #return -errno.ENOENT
       return st
@@ -92,9 +94,10 @@ class FacebookFS(fuse.Fuse):
 
       # Inside an album!
       elif path_separeted[-2] == 'photos':
+          self.curr_fol = fuse_fh.create_ff(self.temp_folder, path_separeted)
           album_id = path_separeted[-1].split("_")[1]
           self.photos = fbjson.get_album_photos(album_id)
-          self.curr_alb_photos = fuse_fh.get_photos(self.photos, self.temp_folder)
+          self.curr_alb_photos = fuse_fh.get_photos(self.photos, self.curr_fol)
           dirents.extend(self.photos.keys())
 
       # Inside videos!
